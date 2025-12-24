@@ -37,9 +37,9 @@ class MoviesListViewModel @Inject constructor(
 
             }
             is MovieListUIEvent.Paginate -> {
-                if(event.category == Category.Popular){
+                if(event.category == Category.Popular && !_movieListState.value.isPopularLoading){
                     getPopularMovieList(true, Category.Popular)
-                }else if(event.category == Category.Upcoming){
+                }else if(event.category == Category.Upcoming && !_movieListState.value.isUpcomingLoading){
                     getUpcomingMovieList(true, Category.Upcoming)
 
                 }
@@ -78,7 +78,7 @@ class MoviesListViewModel @Inject constructor(
                                 Log.d("MoviesListVM", "Updating state: adding ${popularlist.size} movies. Current size: ${currentState.popularMovieList.size}")
                                 currentState.copy(
                                     popularMovieList = currentState.popularMovieList
-                                            + popularlist.shuffled(),
+                                            + popularlist,
                                     popularMovieListPage = currentState.popularMovieListPage + 1,
                                     isPopularLoading =  false
                                 )
@@ -132,7 +132,7 @@ class MoviesListViewModel @Inject constructor(
                                 _movieListState.update {currentState->
                                     currentState.copy(
                                         upComingMovieList =currentState.upComingMovieList
-                                                + upcominglist.shuffled(),
+                                                + upcominglist,
                                         upcomingMovieListPage = currentState.upcomingMovieListPage + 1,
                                         isUpcomingLoading = false
                                     )

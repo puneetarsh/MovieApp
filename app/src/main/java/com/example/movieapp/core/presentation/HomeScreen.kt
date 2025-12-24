@@ -55,6 +55,7 @@ fun HomeScreen( navController: NavHostController) {
     val movieListViewModel= hiltViewModel<MoviesListViewModel>()
     val movieListState=movieListViewModel.movieListState.collectAsState().value
     val bottomNavController= rememberNavController()
+
     Scaffold(bottomBar =  {
         BottomNavigationBar(bottomNavController=bottomNavController,
         onEvent=movieListViewModel::onEvent)

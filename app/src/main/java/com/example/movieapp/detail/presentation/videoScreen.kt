@@ -6,7 +6,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 //import com.example.movieapp.video.VideoPlayer
 
@@ -32,12 +34,24 @@ fun VideoScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
-            VideoPlayer(
-                videoUrl = videoUrl,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp)
-            )
+            if(videoUrl.isBlank()){
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("No trailer available", color = Color.Red)
+                }
+            }
+            else {
+                VideoPlayer(
+                    videoUrl = videoUrl,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                )
+            }
         }
     }
 }

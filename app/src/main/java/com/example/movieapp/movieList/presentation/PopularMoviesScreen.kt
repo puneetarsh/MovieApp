@@ -59,7 +59,7 @@ fun PopularMoviesScreen(
                          contentPadding = PaddingValues(vertical=8.dp, horizontal = 4.dp)
         ) {
            itemsIndexed(movieListState.popularMovieList){index,movie->
-               Log.d("MovieImage", "Poster URL: ${movie.posterPath}")
+             //  Log.d("MovieImage", "Poster URL: ${movie.posterPath}")
                MovieItem(movie = movieListState.popularMovieList[index],
                    navHostController =navController )
                Spacer(modifier = Modifier.height(16.dp))

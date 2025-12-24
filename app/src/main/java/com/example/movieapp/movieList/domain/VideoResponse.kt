@@ -17,5 +17,9 @@ data class VideoItem(
     @SerializedName("name")
     val name: String,     // Video title
     @SerializedName("site")
-    val site: String      // "YouTube"
+    val site: String, // "YouTube"
+    @SerializedName("official")
+    val official: Boolean?=null,
+    @SerializedName("published_at")
+    val publishedAt: String
 )

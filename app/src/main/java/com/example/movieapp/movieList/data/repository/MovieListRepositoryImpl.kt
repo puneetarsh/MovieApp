@@ -38,48 +38,59 @@ class MovieListRepositoryImpl@Inject constructor(
         Log.d("MovieRepo", "getMovieList called — category=$category, page=$page, force=$forceFetchFromRemote")
         return flow{
 
+
+
+
             emit(Loading(true))
            val response = movieApi.getMoviesList(category, page)
             val gson = Gson()
             val jsonResponse = gson.toJson(response)
             Log.d("RawJsonResponse", jsonResponse)
             //made a offline app
-            val localMovieList=movieDatabase.movieDao().getMovieCategory(category)
-            //we should check movies from local database
-            //in case if not possible we move to API
-            val shouldLoadLocalMovie=localMovieList.isNotEmpty() && !forceFetchFromRemote
-            if(shouldLoadLocalMovie){
-                Log.d("MovieRepo", "SUCCESS: Loaded from local cache.")
-                emit(Resource.Success(
-                    data=localMovieList.map { movieEntity ->
-                        movieEntity.toMovie(category)
-                    }
-                ))
-                emit(Loading(false))
-                return@flow
 
 
-            }
-            //if upper case is false
-            //now i want from API
-            Log.d("MovieRepo", "INFO: Fetching from remote API.")
-            val apiCategory = when (category.lowercase()) {
-                "popular" -> "popular"
-                "upcoming" -> "upcoming"
-                else -> "popular" // fallback
-            }
-           Log.d("MovieAPI", "Full URL: https://api.themoviedb.org/3/movie/$apiCategory?api_key=${MovieApi.API_KEY}&page=$page")
+
+                val localMovieList = movieDatabase.movieDao().getMovieCategory(category)
+                //we should check movies from local database
+                //in case if not possible we move to API
+                val shouldLoadLocalMovie = localMovieList.isNotEmpty() && !forceFetchFromRemote
+                if (shouldLoadLocalMovie) {
+                    Log.d("MovieRepo", "SUCCESS: Loaded from local cache.")
+                    emit(
+                        Resource.Success(
+                        data = localMovieList.map { movieEntity ->
+                            movieEntity.toMovie(category)
+                        }
+                    ))
+                    emit(Loading(false))
+                    return@flow
 
 
-            val movieListFromApi=try {
-
-
-                val response = movieApi.getMoviesList(apiCategory, page)
-                Log.d("MovieRepo", "Raw API Response Sample: ${response.results.take(3)}")
-                response.results.forEach {
-                    Log.d("MovieRepo", "Poster path: ${it.posterPath}")
                 }
-                response
+                //if upper case is false
+                //now i want from API
+                Log.d("MovieRepo", "INFO: Fetching from remote API.")
+                val apiCategory = when (category.lowercase()) {
+                    "popular" -> "popular"
+                    "upcoming" -> "upcoming"
+                    else -> "popular" // fallback
+                }
+                Log.d(
+                    "MovieAPI",
+                    "Full URL: https://api.themoviedb.org/3/movie/$apiCategory?api_key=${MovieApi.API_KEY}&page=$page"
+                )
+
+
+                val movieListFromApi = try {
+
+
+                    val response = movieApi.getMoviesList(apiCategory, page)
+                    Log.d("MovieRepo", "Raw API Response Sample: ${response.results.take(3)}")
+                    response.results.forEach {
+                        Log.d("MovieRepo", "Poster path: ${it.posterPath}")
+                    }
+                    response
+
 
 
            }catch (e: IOException){

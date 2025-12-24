@@ -88,20 +88,46 @@ class DetailViewModel @Inject constructor(
             movieListRepository.getMovieTrailer(id).collectLatest { result ->
                 when (result) {
                     is Resource.Success -> {
-                        val trailer = result.data?.results?.firstOrNull {
+                        /*val trailer = result.data?.results?.firstOrNull {
                             it.type == "Trailer"
-                        }
-                        Log.d("DetailVM", "Trailer fetched: $trailer")
+                        }*/
+                        //Log.d("DetailVM", "Trailer fetched: $trailer")
+                        val trailers = result.data?.results?.filter {
+                            Log.d("TrailerCheck", "Name=${it.name}, Official=${it.official}, Published=${it.publishedAt}, Key=${it.key}")
+                            //Log.d("TrailerDebug", "Trailer: name=${it.name}, type=${it.type}, site=${it.site}, official=${it.official}, publishedAt=${it.publishedAt}, key=${it.key}")
+                            it.type.equals("Trailer", ignoreCase = true) &&
+                                    it.site.equals("YouTube", ignoreCase = true)
+                        } ?: emptyList()
+                      /*  val selectedTrailer = trailers.firstOrNull {
+                            it.official== true} ||
+                                    it.publishedAt.contains("2025", true)
+                        }*/
+                       // val mostRecentTrailer = trailers.maxByOrNull { it.publishedAt ?: "" }
 
-                        val youtubeUrl = if (trailer != null) {
-                            "https://www.youtube.com/watch?v=${trailer.key}"
-                        }
-                        else null
+                         //val trailerSite=trailer?.site//youtube
+                      //  val officialTrailer = trailers.firstOrNull { it.official == true }
+                      //  val sortedTrailers = trailers.sortedByDescending { it.publishedAt }
+                        //val mostRecentTrailer = sortedTrailers.firstOrNull()
+                      //  val selectedTrailer = expectedTrailer ?: officialTrailer ?: mostRecentTrailer ?: trailers.firstOrNull()
+                        /*val youtubeUrl = when(trailerSite?.lowercase()) {
+                            "youtube" -> "https://www.youtube.com/watch?v=${trailer.key}"
+
+                            else -> trailer?.key
+                        }*/
+
+                        val selectedTrailer = trailers.firstOrNull {
+                            it.official == true
+                        } ?: trailers.firstOrNull()
+
+
+
+                        val youtubeUrl = selectedTrailer?.key?.let { "https://www.youtube.com/watch?v=$it" }
 
 
                         detailsState.update {
                             it.copy(
-                                trailerUrl = youtubeUrl ?:""  // 🔥 NEW
+                                trailerUrl = youtubeUrl ?:"" , // 🔥 NEW
+                                trailerSite=selectedTrailer?.site
                             )
                         }
                     }

@@ -2,9 +2,14 @@ package com.example.movieapp.detail.presentation
 
 import android.media.browse.MediaBrowser
 import android.net.Uri
+import android.util.Log
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 //import androidx.media3.exoplayer.ExoPlayer
@@ -22,15 +27,25 @@ fun VideoPlayer(
 ) {
     val context = LocalContext.current
     var player by remember { mutableStateOf<ExoPlayer?>(null) }
-
+    if (videoUrl.isNullOrBlank()) {
+        Box(modifier = modifier, contentAlignment = Alignment.Center) {
+            Text("No trailer available", color = Color.Red)
+        }
+        return
+    }
     DisposableEffect(videoUrl) {
         // Create Player
         player = ExoPlayer.Builder(context).build().apply {
-            val media = MediaItem.fromUri(Uri.parse(videoUrl))
-            setMediaItem(media)
-            prepare()
-            playWhenReady = autoPlay
+            try {
+                val media = MediaItem.fromUri(Uri.parse(videoUrl))
+                setMediaItem(media)
+                prepare()
+                playWhenReady = autoPlay
+            }catch (e: Exception){
+                Log.e("VideoPlayer", "Error loading video: ${e.message}")
+            }
         }
+
 
         onDispose {
             player?.release()

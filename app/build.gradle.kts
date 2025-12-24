@@ -103,5 +103,5 @@ dependencies {
     implementation("androidx.media3:media3-ui:1.8.0")
     implementation("com.google.android.exoplayer:exoplayer:2.19.0")
 
-
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
 }
